@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "geolib": "^3.0.4",
+    "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
     "sendmail": "^1.6.1"
   }
