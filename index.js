@@ -1,7 +1,10 @@
 const sendmail = require("sendmail")();
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 const { isPointInPolygon } = require("geolib");
 const fetch = require("node-fetch");
+
+const home = process.env["HOME"];
 
 const twoBedrooms = {
   query:
@@ -15,23 +18,24 @@ const threeBedrooms = {
   name: "Three Bedroom"
 };
 
-const sendPromise = html => new Promise((resolve, reject) => {
-  sendmail(
-    {
-      from: "guythomas721@gmail.com",
-      to: "mmcdowellap5@gmail.com , guythomas721@gmail.com ",
-      subject: "New houses I found",
-      html
-    },
-    function(err, reply) {
-      if (err){
-        reject(err);
-      } else {
-        resolve(reply)
+const sendPromise = html =>
+  new Promise((resolve, reject) => {
+    sendmail(
+      {
+        from: "guythomas721@gmail.com",
+        to: "mmcdowellap5@gmail.com , guythomas721@gmail.com ",
+        subject: "New houses I found",
+        html
+      },
+      function(err, reply) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(reply);
+        }
       }
-    }
-  );
-})
+    );
+  });
 
 const topLeft = { latitude: 37.768682, longitude: -122.426696 };
 const topRight = { latitude: 37.768242, longitude: -122.407941 };
@@ -49,7 +53,9 @@ const isInTheMission = ({ Latitude: latitude, Longitude: longitude }) =>
 const getListings = async ({ query, name }) => {
   const response = await fetch(query);
   const data = await response.json();
-  const alreadySent = new Set(fs.readFileSync('sent.txt', 'utf8').split('\n'));
+  const alreadySent = new Set(
+    fs.readFileSync(path.join(__dirname, "sent.txt"), "utf8").split("\n")
+  );
   const listingsInBounds = data[0]
     .filter(listing => Object.hasOwnProperty.call(listing, "Ask"))
     .filter(isInTheMission)
@@ -93,12 +99,16 @@ const emailHousesInTheMissions = async (queryURLS = []) => {
         `;
 
   if (process.env.NODE_ENV === "production") {
-    const logText = results.map(({ name, listings }) => listings.map( listing => listing.PostingURL).join('\n')).join('\n');
-    try{
+    const logText = results
+      .map(({ name, listings }) =>
+        listings.map(listing => listing.PostingURL).join("\n")
+      )
+      .join("\n");
+    try {
       await sendPromise(finalHTML);
-      fs.appendFileSync('sent.txt', logText);
-    } catch(e){
-      fs.appendFileSync('failed.txt', logText);
+      fs.appendFileSync(path.join(__dirname, "sent.txt"), logText);
+    } catch (e) {
+      fs.appendFileSync(path.join(__dirname, "failed.txt"), logText);
     }
   } else {
     console.log("Would Send\n", finalHTML);
