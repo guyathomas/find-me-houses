@@ -71,7 +71,9 @@ const emailHousesInTheMissions = async (queryURLS = []) => {
   );
 
   if (!totalResultsCount) {
-    console.log("Existing since there are no results");
+    if (!process.env.NODE_ENV !== "production") {
+      console.log("Existing since there are no results");
+    }
     return;
   }
   const listingsHTML = results
@@ -104,6 +106,7 @@ const emailHousesInTheMissions = async (queryURLS = []) => {
       .join("\n");
     try {
       await sendPromise(finalHTML);
+      console.log(`Sent ${totalResultsCount.length} houses`);
       fs.appendFileSync(path.join(__dirname, "sent.txt"), logText);
     } catch (e) {
       fs.appendFileSync(path.join(__dirname, "failed.txt"), logText);
