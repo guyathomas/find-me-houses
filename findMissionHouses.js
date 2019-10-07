@@ -4,17 +4,15 @@ const fs = require("fs");
 const { isPointInPolygon } = require("geolib");
 const fetch = require("node-fetch");
 
-const home = process.env["HOME"];
-
 const twoBedrooms = {
   query:
-    "https://sfbay.craigslist.org/jsonsearch/apa/?sort=date&availabilityMode=0&min_bedrooms=2&max_bedrooms=2&max_price=3800&postal=94110&query=mission&search_distance=0&map=1",
+    "https://sfbay.craigslist.org/search/apa?search_distance=2&postal=94110&max_price=3800&min_bedrooms=2&max_bedrooms=2&availabilityMode=0&sale_date=all+dates",
   name: "Two Bedroom"
 };
 
 const threeBedrooms = {
   query:
-    "https://sfbay.craigslist.org/jsonsearch/apa/?sort=date&availabilityMode=0&min_bedrooms=3&max_bedrooms=3&max_price=5600&postal=94110&query=mission&search_distance=0&map=1",
+    "https://sfbay.craigslist.org/search/apa?search_distance=2&postal=94110&max_price=5600&min_bedrooms=3&max_bedrooms=3&availabilityMode=0&sale_date=all+dates",
   name: "Three Bedroom"
 };
 
