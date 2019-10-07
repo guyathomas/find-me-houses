@@ -6,13 +6,13 @@ const fetch = require("node-fetch");
 
 const twoBedrooms = {
   query:
-    "https://sfbay.craigslist.org/search/apa?search_distance=2&postal=94110&max_price=3800&min_bedrooms=2&max_bedrooms=2&availabilityMode=0&sale_date=all+dates",
+    "https://sfbay.craigslist.org/jsonsearch/apa/?search_distance=2&postal=94110&max_price=3800&min_bedrooms=2&max_bedrooms=2&availabilityMode=0&sale_date=all+dates&map=1",
   name: "Two Bedroom"
 };
 
 const threeBedrooms = {
   query:
-    "https://sfbay.craigslist.org/search/apa?search_distance=2&postal=94110&max_price=5600&min_bedrooms=3&max_bedrooms=3&availabilityMode=0&sale_date=all+dates",
+    "https://sfbay.craigslist.org/jsonsearch/apa/?search_distance=2&postal=94110&max_price=5600&min_bedrooms=3&max_bedrooms=3&availabilityMode=0&sale_date=all+dates&map=1",
   name: "Three Bedroom"
 };
 
@@ -64,7 +64,6 @@ const getListings = async ({ query, name }) => {
 
 const emailHousesInTheMissions = async (queryURLS = []) => {
   const results = await Promise.all(queryURLS.map(getListings));
-  console.log("results", results);
   const totalResultsCount = results.reduce(
     (acc, { listings }) => acc + listings.length,
     0
@@ -106,7 +105,7 @@ const emailHousesInTheMissions = async (queryURLS = []) => {
       .join("\n");
     try {
       await sendPromise(finalHTML);
-      console.log(`Sent ${totalResultsCount.length} houses`);
+      console.log(`Sent ${totalResultsCount} houses`);
       fs.appendFileSync(path.join(__dirname, "sent.txt"), logText);
     } catch (e) {
       fs.appendFileSync(path.join(__dirname, "failed.txt"), logText);
